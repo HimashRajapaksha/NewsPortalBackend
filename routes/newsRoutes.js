@@ -36,17 +36,26 @@ router.post('/add', async (req, res) => {
     res.status(500).send({ error: 'Error creating news' });
   }
 });
-// Update news
+// Update news including image
 router.put('/update/:id', async (req, res) => {
   try {
+    const { title, content, imageUrl } = req.body;
+
+    let updateFields = { title, content };
+    if (imageUrl) {
+      updateFields.imageUrl = imageUrl;
+    }
+
     const updatedNews = await News.findByIdAndUpdate(
       req.params.id,
-      { title: req.body.title, content: req.body.content },
+      updateFields,
       { new: true }
     );
+
     if (!updatedNews) {
       return res.status(404).json({ message: 'News not found' });
     }
+
     res.json(updatedNews);
   } catch (err) {
     res.status(400).json({ message: err.message });
