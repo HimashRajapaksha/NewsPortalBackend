@@ -27,19 +27,15 @@ router.get('/:id', async (req, res) => {
 
 // Add news
 router.post('/add', async (req, res) => {
-  const news = new News({
-    title: req.body.title,
-    content: req.body.content,
-  });
-
+  const { title, content, imageUrl } = req.body;
   try {
-    const newNews = await news.save();
-    res.status(201).json(newNews);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const newNews = new News({ title, content, imageUrl });
+    await newNews.save();
+    res.status(201).send(newNews);
+  } catch (error) {
+    res.status(500).send({ error: 'Error creating news' });
   }
 });
-
 // Update news
 router.put('/update/:id', async (req, res) => {
   try {
